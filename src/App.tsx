@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import StartPage from "./Components/StartPage/StartPage";
+import ProfilePage from "./Components/Profile/ProfilePage";
+import NotFoundPage from "./Components/NotFound/NotFoundPage";
+import PrivateRoutes from "./Components/PrivateRoutes";
+import { RelayEnvironmentProvider } from "react-relay";
+import createRelayEnvironment from "./RelayEnvironment";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Routes>
+      <Route path="/" element={<StartPage />} />
+      <Route element={<PrivateRoutes />}>
+        <RelayEnvironmentProvider
+          environment={createRelayEnvironment(
+            localStorage.getItem("flex-api-key")!
+          )}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <Route path="/Profile" element={<ProfilePage />} />
+        </RelayEnvironmentProvider>
+      </Route>
+      <Route path="/*" element={<NotFoundPage />} />
+    </Routes>
   );
 }
 
